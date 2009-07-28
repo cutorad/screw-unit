@@ -1,4 +1,4 @@
-Screw.Unit(function() {
+Screw.Unit(function(c) { with(c) {
   describe("Matchers", function() {
     describe('#equal', function() {
       it("invokes the provided matcher on a call to expect", function() {
@@ -40,7 +40,7 @@ Screw.Unit(function() {
         });
       });
       
-      describe('when actual is an array', function() {
+      describe('when actual is an Array', function() {
         it("matches Arrays with the same elements", function() {
           expect([1, 2, 4]).to(equal, [1, 2, 4]);
           expect([1, 2, 3]).to_not(equal, [3, 2, 1]);
@@ -49,6 +49,16 @@ Screw.Unit(function() {
         it("recursively applies equality to complex elements", function() {
           expect([{a: 'b'}, {c: 'd'}]).to(equal, [{a: 'b'}, {c: 'd'}]);
           expect([{a: 'b'}, {c: 'd'}]).to_not(equal, [{a: 'b'}, {c: 'E'}]);
+        });
+      });
+
+      describe('when actual is an iterable Object', function() {
+        
+      });
+
+      describe("when actual is a String", function() {
+        it("does not match an Array with the same characters", function() {
+          expect("123").to_not(equal, ["1", "2", "3"]);
         });
       });
 
@@ -69,10 +79,10 @@ Screw.Unit(function() {
       describe(".failure_message", function() {
         it('prints "expected [expected] to (not) be equal [actual]"', function() {
           var message = null;
-          try { expect(1).to(equal, 2) } catch(e) { message = e }
+          try { expect(1).to(equal, 2) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected 1 to equal 2');
           
-          try { expect(1).to_not(equal, 1) } catch(e) { message = e }
+          try { expect(1).to_not(equal, 1) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected 1 to not equal 1');
         });
       });
@@ -103,10 +113,10 @@ Screw.Unit(function() {
       describe(".failure_message", function() {
         it('prints "expected [actual] to (not) match [expected]', function() {
           var message = null;
-          try { expect("hello").to(match, "schmello") } catch(e) { message = e }
+          try { expect("hello").to(match, "schmello") } catch(e) { message = e.message }
           expect(message).to(equal, 'expected "hello" to match "schmello"');
           
-          try { expect("hello").to_not(match, "ello") } catch(e) { message = e }
+          try { expect("hello").to_not(match, "ello") } catch(e) { message = e.message }
           expect(message).to(equal, 'expected "hello" to not match "ello"');
         });
       });
@@ -121,10 +131,10 @@ Screw.Unit(function() {
       describe(".failure_message", function() {
         it("prints 'expected [actual] to (not) be empty", function() {
           var message = null;
-          try { expect([1]).to(be_empty) } catch(e) { message = e }
+          try { expect([1]).to(be_empty) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected [ 1 ] to be empty');
           
-          try { expect([]).to_not(be_empty) } catch(e) { message = e }
+          try { expect([]).to_not(be_empty) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected [] to not be empty');
         });
       });
@@ -140,10 +150,10 @@ Screw.Unit(function() {
       describe(".failure_message", function() {
         it("prints 'expected [actual] to (not) have length [expected]", function() {
           var message = null;
-          try { expect([1, 2]).to(have_length, 4) } catch(e) { message = e }
+          try { expect([1, 2]).to(have_length, 4) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected [ 1, 2 ] to have length 4');
           
-          try { expect([1]).to_not(have_length, 1) } catch(e) { message = e }
+          try { expect([1]).to_not(have_length, 1) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected [ 1 ] to not have length 1');
         });
       });
@@ -158,10 +168,10 @@ Screw.Unit(function() {
       describe(".failure_message", function() {
         it("prints 'expected [actual] to (not) be null", function() {
           var message = null;
-          try { expect(1).to(be_null) } catch(e) { message = e }
+          try { expect(1).to(be_null) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected 1 to be null');
 
-          try { expect(null).to_not(be_null) } catch(e) { message = e }
+          try { expect(null).to_not(be_null) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected null to not be null');
         });
       });
@@ -176,10 +186,10 @@ Screw.Unit(function() {
       describe(".failure_message", function() {
         it("prints 'expected [actual] to (not) be undefined", function() {
           var message = undefined;
-          try { expect(1).to(be_undefined) } catch(e) { message = e }
+          try { expect(1).to(be_undefined) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected 1 to be undefined');
 
-          try { expect(undefined).to_not(be_undefined) } catch(e) { message = e }
+          try { expect(undefined).to_not(be_undefined) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected undefined to not be undefined');
         });
       });
@@ -197,10 +207,10 @@ Screw.Unit(function() {
       describe(".failure_message", function() {
         it("prints 'expected [actual] to (not) be true", function() {
           var message = true;
-          try { expect(false).to(be_true) } catch(e) { message = e }
+          try { expect(false).to(be_true) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected false to be true');
 
-          try { expect(true).to_not(be_true) } catch(e) { message = e }
+          try { expect(true).to_not(be_true) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected true to not be true');
         });
       });
@@ -218,61 +228,15 @@ Screw.Unit(function() {
       describe(".failure_message", function() {
         it("prints 'expected [actual] to (not) be false", function() {
           var message = false;
-          try { expect(true).to(be_false) } catch(e) { message = e }
+          try { expect(true).to(be_false) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected true to be false');
 
-          try { expect(false).to_not(be_false) } catch(e) { message = e }
+          try { expect(false).to_not(be_false) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected false to not be false');
         });
       });
     });
-
-    describe('#match_selector', function() {
-      var elt;
-      before(function() {
-        elt = $("<div class='foo'></div>");
-      });
-
-      it("matches a jQuery element against the expected selector", function() {
-        expect(elt).to(match_selector, 'div.foo');
-        expect(elt).to_not(match_selector, 'div.bar');
-      });
-
-      describe(".failure_message", function() {
-        it("prints 'expected [actual] to (not) match selector [expected]", function() {
-          var message = false;
-          try { expect(elt).to(match_selector, 'div.bar') } catch(e) { message = e }
-          expect(message).to(equal, 'expected $([ <div class="foo"> ]) to match selector div.bar');
-          
-          try { expect(elt).to_not(match_selector, 'div.foo') } catch(e) { message = e }
-          expect(message).to(equal, 'expected $([ <div class="foo"> ]) to not match selector div.foo');
-        });
-      });
-    });
-
-    describe('#contain_selector', function() {
-      var elt;
-      before(function() {
-        elt = $("<div><div class='foo'></div></div>");
-      });
-
-      it("matches a jQuery element against the expected selector", function() {
-        expect(elt).to(contain_selector, 'div.foo');
-        expect(elt).to_not(contain_selector, 'div.bar');
-      });
-
-      describe(".failure_message", function() {
-        it("prints 'expected [actual] to (not) match selector [expected]", function() {
-          var message = false;
-          try { expect(elt).to(contain_selector, 'div.bar') } catch(e) { message = e }
-          expect(message).to(equal, 'expected $([ <div> ]) to contain selector div.bar');
-
-          try { expect(elt).to_not(contain_selector, 'div.foo') } catch(e) { message = e }
-          expect(message).to(equal, 'expected $([ <div> ]) to not contain selector div.foo');
-        });
-      });
-    });
-
+    
     describe('#be_gt', function() {
       it('matches integers greater than the expected value', function() {
         expect(2).to(be_gt, 1);
@@ -287,10 +251,10 @@ Screw.Unit(function() {
       describe(".failure_message", function() {
         it('prints "expected [expected] to (not) be greater than [actual]"', function() {
           var message = null;
-          try { expect(1).to(be_gt, 2) } catch(e) { message = e }
+          try { expect(1).to(be_gt, 2) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected 1 to be greater than 2');
           
-          try { expect(2).to_not(be_gt, 1) } catch(e) { message = e }
+          try { expect(2).to_not(be_gt, 1) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected 2 to not be greater than 1');
         });
       });
@@ -312,10 +276,10 @@ Screw.Unit(function() {
       describe(".failure_message", function() {
         it('prints "expected [expected] to (not) be greater than or equal to [actual]"', function() {
           var message = null;
-          try { expect(1).to(be_gte, 2) } catch(e) { message = e }
+          try { expect(1).to(be_gte, 2) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected 1 to be greater than or equal to 2');
           
-          try { expect(2).to_not(be_gte, 1) } catch(e) { message = e }
+          try { expect(2).to_not(be_gte, 1) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected 2 to not be greater than or equal to 1');
         });
       });
@@ -335,10 +299,10 @@ Screw.Unit(function() {
       describe(".failure_message", function() {
         it('prints "expected [expected] to (not) be less than [actual]"', function() {
           var message = null;
-          try { expect(2).to(be_lt, 1) } catch(e) { message = e }
+          try { expect(2).to(be_lt, 1) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected 2 to be less than 1');
           
-          try { expect(1).to_not(be_lt, 2) } catch(e) { message = e }
+          try { expect(1).to_not(be_lt, 2) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected 1 to not be less than 2');
         });
       });
@@ -360,13 +324,48 @@ Screw.Unit(function() {
       describe(".failure_message", function() {
         it('prints "expected [expected] to (not) be less than or equal to [actual]"', function() {
           var message = null;
-          try { expect(2).to(be_lte, 1) } catch(e) { message = e }
+          try { expect(2).to(be_lte, 1) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected 2 to be less than or equal to 1');
           
-          try { expect(1).to_not(be_lte, 2) } catch(e) { message = e }
+          try { expect(1).to_not(be_lte, 2) } catch(e) { message = e.message }
           expect(message).to(equal, 'expected 1 to not be less than or equal to 2');
         });
       });
     });
+
+    describe("#have_been_called", function() {
+      var mock_fn;
+      before(function() {
+        mock_fn = mock_function();
+      });
+
+      context("when matching a mock function with no expected argument", function() {
+        it("matches if the function's #call_count is > 0", function() {
+          expect(mock_fn).to_not(have_been_called)
+          mock_fn();
+          expect(mock_fn).to(have_been_called)
+        });
+      });
+
+      context("when matching a mock function with the number of times called", function() {
+        it("matches if the function's #call_count matches the expectation", function() {
+          mock_fn();
+          expect(mock_fn).to(have_been_called, once);
+          mock_fn();
+          expect(mock_fn).to(have_been_called, twice);
+          mock_fn();
+          expect(mock_fn).to(have_been_called, thrice);
+          mock_fn();
+          expect(mock_fn).to(have_been_called, 4);
+        });
+      });
+
+      context("when matching a mock function with the expected arguments", function() {
+        it("matches if the function's #most_recent_args match the expectation", function() {
+          mock_fn("foo", "bar");
+          expect(mock_fn).to(have_been_called, with_args("foo", "bar"));
+        });
+      });
+    });
   });
-});
+}});

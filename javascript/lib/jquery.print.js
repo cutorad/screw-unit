@@ -96,8 +96,6 @@
       return obj.toString().match(/^([^)]*\))/)[1];
     else if (obj.nodeType)
       return print_element(obj);
-    else if (obj instanceof jQuery)
-      return "$(" + $.print(obj.get()) + ")";
     else if (obj instanceof Error)
       return print_object(obj, $.extend({}, options, { max_string: 200 }));
     else if (obj instanceof Object)
